@@ -7,22 +7,18 @@
 }
 
 body{
-    height: 100vh;
-    background: linear-gradient(
-        135deg,
-        #8052ec,
-        #d161ff
-    );
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg,#8052ec,#d161ff);
+    padding: 20px;
 }
 
 .container {
-    /* border: 2px solid white; */
-    width: 40%;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left:50% ;
-    padding: 30px 40px;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
 }
 
 #newtask {

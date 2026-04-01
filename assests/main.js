@@ -1,37 +1,73 @@
-document.querySelector('#push').onclick = function(){
-    if(document.querySelector('#newtask input').value.length == 0){
-        alert("Please Enter a Task")
-    }
-    else{
-        document.querySelector('#tasks').innerHTML 
-        += `
-        <div class="task">
-            <span id="taskname">
-                ${document.querySelector
-                ('#newtask input').value}
-            </span>
-            <button class="delete">
-                    <i class="far fa-trash-alt"></i>
-            </button>
-        </div>
-        `;
+const input = document.querySelector('#newtask input');
+const pushBtn = document.querySelector('#push');
+const tasksContainer = document.querySelector('#tasks');
+
+document.addEventListener('DOMContentLoaded', loadTasks);
+
+pushBtn.addEventListener('click', function () {
+
+    const taskValue = input.value.trim();
+
+    if (taskValue === "") {
+        alert("Please Enter a Task");
+        return;
     }
 
-    var current_tasks = document.querySelectorAll(".delete");
+    createTask(taskValue);
+    saveTask(taskValue);
 
-    for(var i = 0; i<current_tasks.length; i++){
-        current_tasks[i].onclick = function(){
-            this.parentNode.remove();
-        }
+    input.value = "";
+});
+
+function createTask(taskValue) {
+    const task = document.createElement('div');
+    task.classList.add('task');
+
+    task.innerHTML = `
+        <span class="taskname">${taskValue}</span>
+        <button class="delete">
+            <i class="far fa-trash-alt"></i>
+        </button>
+    `;
+
+    tasksContainer.appendChild(task);
+}
+
+function saveTask(task) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function loadTasks() {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks.forEach(task => {
+        createTask(task);
+    });
+}
+
+
+tasksContainer.addEventListener('click', function (e) {
+
+    if (e.target.closest('.delete')) {
+        const taskElement = e.target.closest('.task');
+        const taskText = taskElement.querySelector('.taskname').innerText;
+
+        removeTaskFromStorage(taskText);
+        taskElement.remove();
     }
-    
-    var tasks = document.querySelectorAll('.task');
 
-    for(var i = 0; i<tasks.length; i++){
-        tasks[i].onclick = function(){
-            this.classList.toggle("completed");
-        }
+    if (e.target.closest('.task') && !e.target.closest('.delete')) {
+        e.target.closest('.task').classList.toggle('completed');
     }
+});
 
-    document.querySelector('#newtask input').value = "";
+
+function removeTaskFromStorage(taskText) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks = tasks.filter(task => task !== taskText);
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
 }
